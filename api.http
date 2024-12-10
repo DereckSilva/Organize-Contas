@@ -1,0 +1,7 @@
+
+### GET base
+GET http://localhost:3000/
+
+### GET home
+GET http://localhost:3000/home/test
+Content-Type: application/json
