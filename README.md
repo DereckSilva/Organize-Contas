@@ -10,10 +10,8 @@
 ## Licenças
 
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a target="_blank"><img src="https://img.shields.io/badge/release_date-december-red
-" alt="Release Date" /></a>
-<a target="_blank"><img src="https://img.shields.io/badge/status-development-green
-" alt="Release Date" /></a>
+<a href="https://img.shields.io/badge/release-date_december-green" target="_blank"><img src="https://img.shields.io/badge/release_date-december-red" alt="Release Date" /></a>
+<a href="https://img.shields.io/badge/status-development-green" target="_blank"><img src="https://img.shields.io/badge/status-development-green" alt="Release Date" /></a>
 
 ## Objetivo do Projeto
 
