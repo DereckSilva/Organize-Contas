@@ -1,13 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Model } from 'mongoose';
 import { Expense } from './interfaces/expense.interface';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ExpenseService {
   constructor(
-    @Inject('EXPENSE_MODEL') private readonly expnseModel: Model<Expense>,
+    @InjectModel('Expense') private readonly expnseModel: Model<Expense>,
   ) {}
 
   create(createExpenseDto: CreateExpenseDto) {
