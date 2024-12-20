@@ -48,4 +48,4 @@ O foco principal é:
 - [MongoDB](https://www.mongodb.com/pt-br/lp/cloud/atlas/try4?utm_source=google&utm_campaign=search_gs_pl_evergreen_atlas_core_retarget-brand_gic-null_amers-all_ps-all_desktop_eng_lead&utm_term=mongodb&utm_medium=cpc_paid_search&utm_ad=e&utm_ad_campaign_id=14412646314&adgroup=131761122172&cq_cmp=14412646314&gad_source=1&gclid=CjwKCAiApY-7BhBjEiwAQMrrEeLN29Jn4S9gNz0zS7ed9Dr2w_mQkgTpdVvXqSgdU-bqAvD9EUR16RoCgKMQAvD_BwE)
 # Autores
 
-| [<img loading="lazy" src="https://avatars.githubusercontent.com/u/70153036?v=4" width=115><br><sub>Dereck Silva</sub>](https://github.com/DereckSilva) 
+ [<img loading="lazy" src="https://avatars.githubusercontent.com/u/70153036?v=4" width=115><br><sub>Dereck Silva</sub>](https://github.com/DereckSilva) 
