@@ -6,4 +6,5 @@ export const ExpenseSchema = new mongoose.Schema({
   parcels: { type: Number, default: 1 },
   payeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   datePayment: { type: Date, required: true },
+  slug: { type: String, required: true, unique: true },
 });

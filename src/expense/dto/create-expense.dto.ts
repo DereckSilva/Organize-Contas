@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateExpenseDto {
   @IsNotEmpty({ message: 'O nome é obrigatório' })
@@ -15,4 +15,8 @@ export class CreateExpenseDto {
   @IsNotEmpty({ message: 'A data de pagamento é obrigatória' })
   @IsDate()
   datePayment: Date;
+
+  @IsNotEmpty({ message: 'O slug é obrigatório' })
+  @IsString({ message: 'O slug deve ser uma string' })
+  slug: string;
 }

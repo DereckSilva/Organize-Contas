@@ -38,4 +38,8 @@ export class CreateUserDto {
       isRecipient: boolean;
     },
   ];
+
+  @IsNotEmpty({ message: 'O slug é obrigatório' })
+  @IsString({ message: 'O slug deve ser uma string' })
+  slug: string;
 }
