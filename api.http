@@ -2,6 +2,18 @@
 ### GET base
 GET http://localhost:3000/
 
-### GET home
-GET http://localhost:3000/home/test
+### GET user
+GET http://localhost:3000/user/one
 Content-Type: application/json
+
+{
+  "email": "###@gmail.com"
+}
+
+### PATCH user
+PATCH http://localhost:3000/user/
+Content-Type: application/json
+
+{
+  "email": ""
+}

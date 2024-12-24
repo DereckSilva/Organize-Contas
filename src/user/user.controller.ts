@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Controller('user')
 export class UserController {
@@ -12,23 +23,26 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  @Get('all')
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Get('one')
+  @UsePipes(new ValidationPipe())
+  findOne(@Body() user: FindUserDto) {
+    return this.userService.findOne(user.email);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Patch()
+  @UsePipes(new ValidationPipe())
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto.email, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Delete(':email')
+  @UsePipes(new ValidationPipe())
+  remove(@Param('email') email: FindUserDto) {
+    return this.userService.remove(email.email);
   }
 }

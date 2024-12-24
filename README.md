@@ -22,6 +22,7 @@ O foco principal é:
 
 ## Funcionalidades do projeto 🏗️
 
+- Tela de ADM (administração dos usuários)
 - Criação de perfil
 - Recuperação de Senha
 - Adição de Contas Pessoais
