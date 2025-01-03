@@ -9,7 +9,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SlugService } from './slug/slug.service';
 
 @Module({
-  //teste
   imports: [
     UserModule,
     ExpenseModule,
