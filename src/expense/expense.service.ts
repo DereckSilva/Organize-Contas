@@ -5,15 +5,23 @@ import { Model } from 'mongoose';
 import { Expense } from './interfaces/expense.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SlugService } from 'src/slug/slug.service';
 
 @Injectable()
 export class ExpenseService {
   constructor(
-    @InjectModel('Expense') private readonly expnseModel: Model<Expense>,
+    @InjectModel('Expense') private readonly expenseModel: Model<Expense>,
     private readonly eventEmitter: EventEmitter2,
+    private readonly slugService: SlugService,
   ) {}
 
   create(createExpenseDto: CreateExpenseDto) {
+    createExpenseDto = {
+      ...createExpenseDto,
+      slug: this.slugService.createSlug(
+        createExpenseDto.name + ' ' + createExpenseDto.datePayment,
+      ),
+    };
     this.eventEmitter.emit('expense.created', createExpenseDto);
     return 'This action adds a new expense';
   }

@@ -9,6 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   Sse,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,8 +27,23 @@ export class UserController {
   ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @UsePipes(new ValidationPipe())
+  async create(@Body() createUserDto: CreateUserDto) {
+    const usuario = await this.userService.findOne(createUserDto.email);
+    if (usuario.length > 0) {
+      return [
+        {
+          message: 'Usuário já cadastrado',
+          code: HttpStatus.FOUND,
+          data: usuario,
+        },
+      ];
+    }
+    return {
+      message: 'Usuário cadastrado com sucesso',
+      code: HttpStatus.CREATED,
+      data: await this.userService.create(createUserDto),
+    };
   }
 
   @Get('all')
@@ -62,6 +78,7 @@ export class UserController {
 
   @Sse('created-user')
   createdUser(): Observable<User> {
+    console.log('usuario criado');
     return fromEvent(this.eventEmitter, 'user.created').pipe(
       map((data) => data as User),
     );

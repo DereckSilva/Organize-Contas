@@ -17,3 +17,13 @@ Content-Type: application/json
 {
   "email": ""
 }
+
+### POST user
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+  "name" : "Dereck Silva",
+  "email": "viniciusde3.reckc39@gmail.com",
+  "password": ""
+}

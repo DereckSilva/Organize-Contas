@@ -11,4 +11,5 @@ export interface User extends Document {
     payeeId: string;
     dataPayment: Date;
   }>;
+  readonly slug: string;
 }

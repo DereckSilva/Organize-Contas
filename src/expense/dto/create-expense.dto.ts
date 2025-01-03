@@ -1,7 +1,11 @@
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateExpenseDto {
   @IsNotEmpty({ message: 'O nome é obrigatório' })
+  @IsString({ message: 'O nome da conta precisa ser uma string' })
+  @MinLength(10, {
+    message: 'A descrição da conta precisa ter no mínimo 10 caracteres',
+  })
   name: string;
 
   @IsNotEmpty({ message: 'O preço é obrigatório' })
@@ -16,7 +20,5 @@ export class CreateExpenseDto {
   @IsDate()
   datePayment: Date;
 
-  @IsNotEmpty({ message: 'O slug é obrigatório' })
-  @IsString({ message: 'O slug deve ser uma string' })
   slug: string;
 }

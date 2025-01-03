@@ -6,6 +6,7 @@ import { ExpenseModule } from './expense/expense.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { SlugService } from './slug/slug.service';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SlugService],
 })
 export class AppModule {}

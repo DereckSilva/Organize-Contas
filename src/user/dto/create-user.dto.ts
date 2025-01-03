@@ -1,3 +1,4 @@
+import { Prop } from '@nestjs/mongoose';
 import {
   IsNotEmpty,
   IsString,
@@ -5,6 +6,8 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import mongoose from 'mongoose';
+import { ExpenseSchema } from 'src/expense/schemas/expense.schema';
 
 export class CreateUserDto {
   @IsString()
@@ -28,18 +31,8 @@ export class CreateUserDto {
   })
   password: string;
 
-  recipients: [
-    {
-      name: string;
-      price: number;
-      parcels: number;
-      payeeId: string;
-      datePayment: Date;
-      isRecipient: boolean;
-    },
-  ];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Expense' }] })
+  recipients: (typeof ExpenseSchema)[];
 
-  @IsNotEmpty({ message: 'O slug é obrigatório' })
-  @IsString({ message: 'O slug deve ser uma string' })
   slug: string;
 }
