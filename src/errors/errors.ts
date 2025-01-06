@@ -27,3 +27,9 @@ export class ErrorUpdateUser extends Error {
     super('Houve um erro ao realizar a atualização do usuário');
   }
 }
+
+export class ErrorRemoveUser extends Error {
+  constructor() {
+    super('Houve um erro ao remover um usuário');
+  }
+}

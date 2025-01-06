@@ -22,6 +22,7 @@ import { User } from './interfaces/user.interface';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
 import { ErrorFoundUser } from 'src/errors/errors';
+import { Public } from 'src/decorator/is-public.decorator';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -32,15 +33,21 @@ export class UserController {
   ) {}
 
   @Post()
+  @Public()
   @UsePipes(new ValidationPipe())
   async create(@Body() createUserDto: CreateUserDto) {
-    const usuario = await this.userService.findOne(createUserDto.email);
-    if (usuario.length > 0) {
+    const user = await this.userService.findOne(createUserDto.email);
+    if (user.length > 0) {
       return [
         {
           message: 'Usuário já cadastrado',
           statusCode: HttpStatus.FOUND,
-          data: usuario,
+          data: {
+            name: user[0].name,
+            email: user[0].email,
+            slug: user[0].slug,
+            recipients: user[0].recipients,
+          },
         },
       ];
     }
@@ -89,7 +96,7 @@ export class UserController {
     if (user.length === 0) {
       throw new ErrorFoundUser();
     }
-    await this.userService.updatePassword(user[0].password, updatePass);
+    await this.userService.updatePassword(user[0], updatePass);
     return [
       {
         message: 'Senha atualizada com sucesso',
@@ -100,8 +107,18 @@ export class UserController {
 
   @Delete(':email')
   @UsePipes(new ValidationPipe())
-  remove(@Param('email') email: FindUserDto) {
-    return this.userService.remove(email.email);
+  async remove(@Param('email') email: string) {
+    const user = await this.userService.findOne(email);
+    if (user.length === 0) {
+      throw new ErrorFoundUser();
+    }
+    await this.userService.remove(user[0]);
+    return [
+      {
+        message: 'Usuário excluído com sucesso',
+        statusCode: HttpStatus.OK,
+      },
+    ];
   }
 
   @Sse('updated-user')

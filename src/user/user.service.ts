@@ -12,6 +12,7 @@ import {
   ErrorFoundUser,
   ErrorInsertUser,
   ErrorInvalidOldPassword,
+  ErrorRemoveUser,
 } from 'src/errors/errors';
 
 @Injectable()
@@ -34,7 +35,14 @@ export class UserService {
       };
       this.eventEmitter.emit('user.created', createUserDto);
       const user = await new this.userModel(createUserDto).save();
-      return [user.name, user.email, user.slug];
+      return [
+        {
+          name: user.name,
+          email: user.email,
+          slug: user.slug,
+          recipients: user.recipients,
+        },
+      ];
     } catch (error) {
       console.log(error.message);
       throw new ErrorInsertUser();
@@ -63,14 +71,17 @@ export class UserService {
     return `This action updates a #${email} user`;
   }
 
-  async updatePassword(hash: string, updatePassword: UpdatePasswordDto) {
+  async updatePassword(user: User, updatePassword: UpdatePasswordDto) {
     if (
-      !(await this.cryptHash.comparePassword(updatePassword.oldPassword, hash))
+      !(await this.cryptHash.comparePassword(
+        updatePassword.oldPassword,
+        user.password,
+      ))
     ) {
       throw new ErrorInvalidOldPassword();
     }
     await this.userModel.updateOne(
-      { email: updatePassword.email },
+      { id: user.id },
       {
         $set: {
           password: await this.cryptHash.encryptPassword(
@@ -82,7 +93,13 @@ export class UserService {
     this.eventEmitter.emit('user.updated', updatePassword);
   }
 
-  remove(email: string) {
-    return `This action removes a #${email} user`;
+  async remove(user: User) {
+    try {
+      await this.userModel.deleteOne({ _id: user.id });
+      return true;
+    } catch (error) {
+      console.log(error);
+      throw new ErrorRemoveUser();
+    }
   }
 }

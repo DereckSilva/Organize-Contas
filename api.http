@@ -11,7 +11,7 @@ Content-Type: application/json
 Authorization: Bearer {{ jwt }}
 
 {
-  "email": "viniciusdereck3d9@gmail.com"
+  "email": "viniciusdereck39@gmail.com"
 }
 
 ### POST login
@@ -38,7 +38,7 @@ Content-Type: application/json
 
 {
   "name" : "Dereck Silva",
-  "email": "viniciusdereck39@gmail.com",
+  "email": "viniciusdereck3499@gmail.com",
   "password": ""
 }
 
@@ -52,3 +52,7 @@ Authorization: Bearer {{ jwt }}
   "oldPassword": "",
   "newPassword": ""
 }
+
+### DELETE user
+DELETE http://localhost:3000/user/viniciusdereck349@gmail.com
+Authorization: Bearer {{ jwt }}
