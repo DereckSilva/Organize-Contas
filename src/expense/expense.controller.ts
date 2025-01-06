@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Sse,
+  UseGuards,
 } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
@@ -14,7 +15,9 @@ import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { fromEvent, map, Observable } from 'rxjs';
 import { Expense } from './interfaces/expense.interface';
+import { AuthGuard } from 'src/auth/auth.guards';
 
+@UseGuards(AuthGuard)
 @Controller('expense')
 export class ExpenseController {
   constructor(

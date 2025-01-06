@@ -10,5 +10,6 @@ import { CryptHash } from 'src/CryptHash/crypt-hash.encrypt';
   imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])],
   controllers: [UserController],
   providers: [UserService, SlugService, CryptHash],
+  exports: [UserService],
 })
 export class UserModule {}

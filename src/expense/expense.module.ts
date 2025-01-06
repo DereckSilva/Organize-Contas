@@ -11,5 +11,6 @@ import { SlugService } from 'src/slug/slug.service';
   ],
   controllers: [ExpenseController],
   providers: [ExpenseService, SlugService],
+  exports: [ExpenseService],
 })
 export class ExpenseModule {}

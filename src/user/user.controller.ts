@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   Sse,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,7 +19,11 @@ import { FindUserDto } from './dto/find-user.dto';
 import { fromEvent, map, Observable } from 'rxjs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { User } from './interfaces/user.interface';
+import { UpdatePasswordDto } from './dto/update-password.dto';
+import { AuthGuard } from 'src/auth/auth.guards';
+import { ErrorFoundUser } from 'src/errors/errors';
 
+@UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
   constructor(
@@ -34,14 +39,14 @@ export class UserController {
       return [
         {
           message: 'Usuário já cadastrado',
-          code: HttpStatus.FOUND,
+          statusCode: HttpStatus.FOUND,
           data: usuario,
         },
       ];
     }
     return {
       message: 'Usuário cadastrado com sucesso',
-      code: HttpStatus.CREATED,
+      statusCode: HttpStatus.CREATED,
       data: await this.userService.create(createUserDto),
     };
   }
@@ -53,14 +58,44 @@ export class UserController {
 
   @Get('one')
   @UsePipes(new ValidationPipe())
-  findOne(@Body() user: FindUserDto) {
-    return this.userService.findOne(user.email);
+  async findOne(@Body() user: FindUserDto) {
+    const person = await this.userService.findOne(user.email);
+    if (person.length === 0) {
+      throw new ErrorFoundUser();
+    }
+    return [
+      {
+        message: 'Usuário encontrado',
+        statusCode: HttpStatus.FOUND,
+        user: {
+          name: person[0].name,
+          email: person[0].email,
+          slug: person[0].slug,
+        },
+      },
+    ];
   }
 
   @Patch()
   @UsePipes(new ValidationPipe())
   update(@Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(updateUserDto.email, updateUserDto);
+  }
+
+  @Patch('update-password')
+  @UsePipes(new ValidationPipe())
+  async updatePassword(@Body() updatePass: UpdatePasswordDto) {
+    const user = await this.userService.findOne(updatePass.email);
+    if (user.length === 0) {
+      throw new ErrorFoundUser();
+    }
+    await this.userService.updatePassword(user[0].password, updatePass);
+    return [
+      {
+        message: 'Senha atualizada com sucesso',
+        statusCode: HttpStatus.OK,
+      },
+    ];
   }
 
   @Delete(':email')

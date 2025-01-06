@@ -19,7 +19,7 @@ export class ExpenseService {
     createExpenseDto = {
       ...createExpenseDto,
       slug: this.slugService.createSlug(
-        createExpenseDto.name + ' ' + createExpenseDto.datePayment,
+        `${createExpenseDto.name} ${createExpenseDto.datePayment}`,
       ),
     };
     this.eventEmitter.emit('expense.created', createExpenseDto);

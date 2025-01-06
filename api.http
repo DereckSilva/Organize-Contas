@@ -2,12 +2,26 @@
 ### GET base
 GET http://localhost:3000/
 
+###
+@jwt = {{ token_login.response.body.access_token }}
+
 ### GET user
 GET http://localhost:3000/user/one
 Content-Type: application/json
+Authorization: Bearer {{ jwt }}
 
 {
-  "email": "###@gmail.com"
+  "email": "viniciusdereck3d9@gmail.com"
+}
+
+### POST login
+# @name token_login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "viniciusdereck39@gmail.com",
+  "password": ""
 }
 
 ### PATCH user
@@ -15,7 +29,7 @@ PATCH http://localhost:3000/user/
 Content-Type: application/json
 
 {
-  "email": ""
+  "email": "viniciusdereck39"
 }
 
 ### POST user
@@ -24,6 +38,17 @@ Content-Type: application/json
 
 {
   "name" : "Dereck Silva",
-  "email": "viniciusde3.reckc39@gmail.com",
+  "email": "viniciusdereck39@gmail.com",
   "password": ""
+}
+
+### PATCH user
+PATCH http://localhost:3000/user/update-password
+Content-Type: application/json
+Authorization: Bearer {{ jwt }}
+
+{
+  "email": "viniciusdereck39@gmail.com",
+  "oldPassword": "",
+  "newPassword": ""
 }
