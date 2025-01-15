@@ -14,7 +14,7 @@ export class ErrorFoundUserFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     response.status(HttpStatus.NOT_FOUND).json({
-      message: 'Usuário não encontrado',
+      message: 'Houve um erro ao tentar encontrar um usuário',
       statusCode: HttpStatus.NOT_FOUND,
     });
   }

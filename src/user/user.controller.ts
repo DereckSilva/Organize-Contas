@@ -47,6 +47,7 @@ export class UserController {
             email: user[0].email,
             slug: user[0].slug,
             recipients: user[0].recipients,
+            role: user[0].role,
           },
         },
       ];

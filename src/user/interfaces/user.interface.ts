@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface User extends Document {
+  readonly _id: string;
   readonly name: string;
   readonly email: string;
   readonly password: string;
@@ -10,6 +11,8 @@ export interface User extends Document {
     parcels: number;
     payeeId: string;
     dataPayment: Date;
+    intermediary: boolean;
   }>;
   readonly slug: string;
+  readonly role: string;
 }

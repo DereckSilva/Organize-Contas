@@ -6,6 +6,7 @@ import { ErrorInvalidPasswordFilter } from './filters/error-invalid-password.fil
 import { ErrorUpdateUserFilter } from './filters/error-update-user.filter';
 import { ErrorInvalidOldPasswordFilter } from './filters/error-invalid-old-password.filter';
 import { ErrorRemoveUserFilter } from './filters/error-remove-user.filter';
+import { ErrorRoleUserFilter } from './filters/error-role-user.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,7 @@ async function bootstrap() {
     new ErrorInvalidOldPasswordFilter(),
     new ErrorUpdateUserFilter(),
     new ErrorRemoveUserFilter(),
+    new ErrorRoleUserFilter(),
   );
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT ?? 3000);

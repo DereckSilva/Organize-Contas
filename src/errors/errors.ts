@@ -12,7 +12,7 @@ export class ErrorInvalidOldPassword extends Error {
 
 export class ErrorFoundUser extends Error {
   constructor() {
-    super('Usuário não encontrado');
+    super('Houve um erro ao tentar encontrar um usuário');
   }
 }
 
@@ -31,5 +31,15 @@ export class ErrorUpdateUser extends Error {
 export class ErrorRemoveUser extends Error {
   constructor() {
     super('Houve um erro ao remover um usuário');
+  }
+}
+
+export class ErrorRoleUser extends Error {
+  USER: string;
+  constructor(user: string) {
+    super(
+      `O usuário ${user} não tem função adequada para realizar atualização do usuário`,
+    );
+    this.USER = user;
   }
 }

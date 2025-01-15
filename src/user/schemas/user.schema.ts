@@ -6,4 +6,5 @@ export const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   recipients: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Expense' }],
   slug: { type: String, required: true, unique: true },
+  roles: { type: String, required: true },
 });
