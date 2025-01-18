@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { Model } from 'mongoose';
@@ -6,6 +6,12 @@ import { Expense } from './interfaces/expense.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SlugService } from 'src/slug/slug.service';
+import { UserService } from 'src/user/user.service';
+import {
+  ErrorEmptyIntermediary,
+  ErrorFoundUser,
+  ErrorRemoveExpense,
+} from 'src/errors/errors';
 
 @Injectable()
 export class ExpenseService {
@@ -13,33 +19,87 @@ export class ExpenseService {
     @InjectModel('Expense') private readonly expenseModel: Model<Expense>,
     private readonly eventEmitter: EventEmitter2,
     private readonly slugService: SlugService,
+    private readonly userService: UserService,
   ) {}
 
-  create(createExpenseDto: CreateExpenseDto) {
+  async create(createExpenseDto: CreateExpenseDto) {
+    const user = await this.userService.findOne(createExpenseDto.payeeId)[0];
+    if (typeof user === 'undefined' || user == null) {
+      throw new ErrorFoundUser();
+    }
+
+    if (
+      createExpenseDto.intermediary &&
+      createExpenseDto.intermediaryId.length === 0
+    ) {
+      throw new ErrorEmptyIntermediary();
+    }
+
+    const intermediary = await this.userService.findOne(
+      createExpenseDto.intermediaryId,
+    )[0];
+    if (typeof intermediary === 'undefined' || intermediary == null) {
+      throw new ErrorFoundUser();
+    }
     createExpenseDto = {
       ...createExpenseDto,
       slug: this.slugService.createSlug(
         `${createExpenseDto.name} ${createExpenseDto.datePayment}`,
       ),
     };
+
     this.eventEmitter.emit('expense.created', createExpenseDto);
-    return 'This action adds a new expense';
+    const expense = (await new this.expenseModel(
+      createExpenseDto,
+    ).save()) as Expense;
+    return [expense];
   }
 
-  findAll() {
-    return `This action returns all expense`;
+  async findAll() {
+    const expense = await this.expenseModel.find();
+    if (expense.length === 0) {
+      return [
+        {
+          message: 'Nenhuma conta foi cadastrada',
+          statusCode: HttpStatus.NO_CONTENT,
+          data: {},
+        },
+      ];
+    }
+    return expense;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} expense`;
+  async findOne(id: string) {
+    const expense = (await this.expenseModel
+      .findOne({ _id: id })
+      .exec()) as Expense;
+    return [expense];
   }
 
-  update(id: number, updateExpenseDto: UpdateExpenseDto) {
+  async update(id: string, updateExpenseDto: UpdateExpenseDto) {
+    const user = await this.userService.findOne(updateExpenseDto.payeeId);
+    if (user.length === 0) {
+      throw new ErrorFoundUser();
+    }
     this.eventEmitter.emit('expense.updated', { id, updateExpenseDto });
-    return `This action updates a #${id} expense`;
+    const expense = await this.expenseModel.updateOne(
+      { id: id },
+      {
+        $set: {
+          ...updateExpenseDto,
+        },
+      },
+    );
+    return [expense];
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} expense`;
+  async remove(id: string) {
+    try {
+      await this.expenseModel.deleteOne({ _id: id });
+      return true;
+    } catch (error) {
+      console.log(error);
+      throw new ErrorRemoveExpense();
+    }
   }
 }

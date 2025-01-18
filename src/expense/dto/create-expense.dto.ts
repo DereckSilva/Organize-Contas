@@ -21,4 +21,8 @@ export class CreateExpenseDto {
   datePayment: Date;
 
   slug: string;
+
+  intermediaryId: string;
+
+  intermediary: boolean;
 }

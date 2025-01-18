@@ -33,6 +33,17 @@ export class ErrorRemoveUser extends Error {
     super('Houve um erro ao remover um usuário');
   }
 }
+export class ErrorRemoveExpense extends Error {
+  constructor() {
+    super('Houve um erro ao remover uma conta');
+  }
+}
+
+export class ErrorEmptyIntermediary extends Error {
+  constructor() {
+    super('Deve-se inserir o ID do terceiro da conta');
+  }
+}
 
 export class ErrorRoleUser extends Error {
   USER: string;

@@ -8,6 +8,7 @@ import {
   Delete,
   Sse,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
 import { CreateExpenseDto } from './dto/create-expense.dto';
@@ -26,8 +27,22 @@ export class ExpenseController {
   ) {}
 
   @Post()
-  create(@Body() createExpenseDto: CreateExpenseDto) {
-    return this.expenseService.create(createExpenseDto);
+  async create(@Body() createExpenseDto: CreateExpenseDto) {
+    const expense = await this.expenseService.create(createExpenseDto);
+    return [
+      {
+        message: 'Conta criada com sucesso',
+        statusCode: HttpStatus.CREATED,
+        data: {
+          name: expense[0].name,
+          slug: expense[0].slug,
+          price: expense[0].price,
+          parcels: expense[0].parcels,
+          intermediary: expense[0].intermediary,
+          datePayment: expense[0].dataPayment,
+        },
+      },
+    ];
   }
 
   @Get()
@@ -37,17 +52,17 @@ export class ExpenseController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.expenseService.findOne(+id);
+    return this.expenseService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
-    return this.expenseService.update(+id, updateExpenseDto);
+    return this.expenseService.update(id, updateExpenseDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.expenseService.remove(+id);
+    return this.expenseService.remove(id);
   }
 
   @Sse()

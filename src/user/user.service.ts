@@ -13,7 +13,6 @@ import {
   ErrorInsertUser,
   ErrorInvalidOldPassword,
   ErrorRemoveUser,
-  ErrorRoleUser,
 } from 'src/errors/errors';
 
 @Injectable()
@@ -54,36 +53,27 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  async findOne(email: string) {
-    const user = (await this.userModel.findOne({ email }).exec()) as User;
+  async findOne(emailOrId: string) {
+    const user = (await this.userModel.findOne({ emailOrId }).exec()) as User;
     return [user];
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {
-    // essa função é específica para atualizar informações do usuário
-    // informações das contas é dentro do expense service
     const user = (await this.findOne(email))[0];
     if (typeof user === 'undefined' || user == null) {
       throw new ErrorFoundUser();
     }
-    // essa verificação não é aqui, passar lógica para o expense service
-    if (
-      user.role === 'user' &&
-      'recipients' in user &&
-      user.recipients[0].intermediary
-    ) {
-      throw new ErrorRoleUser(user.email);
-    }
 
-    // alterar informação de atualização do usuário
-    await this.userModel.updateOne(
+    const userModified = await this.userModel.updateOne(
       { id: user.id },
       {
-        $set: {},
+        $set: {
+          ...updateUserDto,
+        },
       },
     );
     this.eventEmitter.emit('user.updated', { email, updateUserDto });
-    return `This action updates a #${email} user`;
+    return [userModified];
   }
 
   async updatePassword(user: User, updatePassword: UpdatePasswordDto) {
