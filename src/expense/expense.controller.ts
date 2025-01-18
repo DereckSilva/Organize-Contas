@@ -17,6 +17,8 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { fromEvent, map, Observable } from 'rxjs';
 import { Expense } from './interfaces/expense.interface';
 import { AuthGuard } from 'src/auth/auth.guards';
+import { ErrorEmptyIntermediary } from 'src/errors/errors';
+import { UserController } from 'src/user/user.controller';
 
 @UseGuards(AuthGuard)
 @Controller('expense')
@@ -24,10 +26,29 @@ export class ExpenseController {
   constructor(
     private readonly expenseService: ExpenseService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly userController: UserController,
   ) {}
 
   @Post()
   async create(@Body() createExpenseDto: CreateExpenseDto) {
+    if (
+      createExpenseDto.intermediary &&
+      createExpenseDto.intermediaryId.length === 0
+    ) {
+      throw new ErrorEmptyIntermediary();
+    }
+
+    const intermediaryId = createExpenseDto.intermediaryId;
+    const intermediary = await this.userController.findOne({
+      intermediaryId,
+    })[0];
+    if (typeof intermediary === 'undefined' || intermediary == null) {
+      // caso o terceiro/intermediario não exista deve-se criar esse usuario
+      // ajustar o DTO do expense e do user
+      const newIntermediary =
+        await this.userController.create(createExpenseDto);
+      createExpenseDto.intermediaryId = newIntermediary[0].data.email;
+    }
     const expense = await this.expenseService.create(createExpenseDto);
     return [
       {

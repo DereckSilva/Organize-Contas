@@ -1,6 +1,8 @@
+import { PartialType } from '@nestjs/mapped-types';
 import { IsDate, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateExpenseDto {
+export class CreateExpenseDto extends PartialType(CreateUserDto) {
   @IsNotEmpty({ message: 'O nome é obrigatório' })
   @IsString({ message: 'O nome da conta precisa ser uma string' })
   @MinLength(10, {

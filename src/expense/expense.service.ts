@@ -7,11 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SlugService } from 'src/slug/slug.service';
 import { UserService } from 'src/user/user.service';
-import {
-  ErrorEmptyIntermediary,
-  ErrorFoundUser,
-  ErrorRemoveExpense,
-} from 'src/errors/errors';
+import { ErrorFoundUser, ErrorRemoveExpense } from 'src/errors/errors';
 
 @Injectable()
 export class ExpenseService {
@@ -28,19 +24,6 @@ export class ExpenseService {
       throw new ErrorFoundUser();
     }
 
-    if (
-      createExpenseDto.intermediary &&
-      createExpenseDto.intermediaryId.length === 0
-    ) {
-      throw new ErrorEmptyIntermediary();
-    }
-
-    const intermediary = await this.userService.findOne(
-      createExpenseDto.intermediaryId,
-    )[0];
-    if (typeof intermediary === 'undefined' || intermediary == null) {
-      throw new ErrorFoundUser();
-    }
     createExpenseDto = {
       ...createExpenseDto,
       slug: this.slugService.createSlug(
