@@ -31,23 +31,32 @@ export class ExpenseController {
 
   @Post()
   async create(@Body() createExpenseDto: CreateExpenseDto) {
-    if (
-      createExpenseDto.intermediary &&
-      createExpenseDto.intermediaryId.length === 0
-    ) {
+    const intermediaryIds = createExpenseDto.intermediaryIds.filter(
+      (value) => value !== null || value !== undefined,
+    );
+
+    if (createExpenseDto.intermediary && intermediaryIds.length === 0) {
       throw new ErrorEmptyIntermediary();
     }
 
-    const intermediaryId = createExpenseDto.intermediaryId;
-    const intermediary = await this.userController.findOne({
-      intermediaryId,
-    })[0];
-    if (typeof intermediary === 'undefined' || intermediary == null) {
-      // caso o terceiro/intermediario não exista deve-se criar esse usuario
-      // ajustar o DTO do expense e do user
-      const newIntermediary =
-        await this.userController.create(createExpenseDto);
-      createExpenseDto.intermediaryId = newIntermediary[0].data.email;
+    for (const i of createExpenseDto.intermediaryIds) {
+      const intermediaryId = createExpenseDto.intermediaryIds[i];
+      const intermediary = await this.userController.findOne({
+        intermediaryId,
+      })[0];
+      if (typeof intermediary === 'undefined' || intermediary == null) {
+        const newUser = {
+          name: createExpenseDto.name,
+          email: createExpenseDto.email,
+          password: createExpenseDto.password,
+          recipients: createExpenseDto.recipients,
+          slug: createExpenseDto.slug,
+          role: createExpenseDto.role,
+        };
+
+        const newIntermediary = await this.userController.create(newUser);
+        createExpenseDto.intermediaryIds.push(newIntermediary[0].data.id);
+      }
     }
     const expense = await this.expenseService.create(createExpenseDto);
     return [

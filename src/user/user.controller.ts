@@ -43,6 +43,7 @@ export class UserController {
           message: 'Usuário já cadastrado',
           statusCode: HttpStatus.FOUND,
           data: {
+            id: user[0]._id,
             name: user[0].name,
             email: user[0].email,
             slug: user[0].slug,

@@ -17,14 +17,12 @@ export class CreateExpenseDto extends PartialType(CreateUserDto) {
   parcels: number;
 
   payeeId: string;
+  intermediary: boolean;
+  intermediaryIds: [string];
 
   @IsNotEmpty({ message: 'A data de pagamento é obrigatória' })
   @IsDate()
   datePayment: Date;
 
   slug: string;
-
-  intermediaryId: string;
-
-  intermediary: boolean;
 }

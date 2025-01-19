@@ -37,6 +37,7 @@ export class UserService {
       const user = await new this.userModel(createUserDto).save();
       return [
         {
+          id: user._id,
           name: user.name,
           email: user.email,
           slug: user.slug,
