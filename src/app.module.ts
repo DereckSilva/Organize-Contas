@@ -8,13 +8,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SlugService } from './slug/slug.service';
 import { AuthModule } from './auth/auth.module';
-import { UserModule as UserModuleSwagger } from './api-docs/users/user.module';
 
 @Module({
   imports: [
     UserModule,
     ExpenseModule,
-    UserModuleSwagger,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
