@@ -1,20 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { ExpenseModule } from './expense/expense.module';
+import { CryptHash } from 'src/CryptHash/crypt-hash.encrypt';
+import { SlugService } from 'src/slug/slug.service';
+import { UserService } from 'src/user/user.service';
+import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserSchema } from 'src/user/schemas/user.schema';
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-import { SlugService } from './slug/slug.service';
-import { AuthModule } from './auth/auth.module';
-import { UserModule as UserModuleSwagger } from './api-docs/users/user.module';
 
 @Module({
   imports: [
-    UserModule,
-    ExpenseModule,
-    UserModuleSwagger,
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -36,9 +32,10 @@ import { UserModule as UserModuleSwagger } from './api-docs/users/user.module';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, SlugService],
+
+  controllers: [UserController],
+  providers: [UserService, SlugService, CryptHash, EventEmitter2],
+  exports: [UserService],
 })
-export class AppModule {}
+export class UserModule {}

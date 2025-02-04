@@ -9,9 +9,12 @@ import { ErrorRemoveUserFilter } from './filters/error-remove-user.filter';
 import { ErrorRoleUserFilter } from './filters/error-role-user.filter';
 import { ErrorEmptyIntermediaryFilter } from './filters/error-empty-intermediary.filter';
 import { ErrorRemoveExpenseFilter } from './filters/error-remove-expense.filter';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { UserModule } from './api-docs/users/user.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const appSwagger = await NestFactory.create(UserModule);
   app.useGlobalFilters(
     new ErrorFoundUserFilter(),
     new ErrorInvalidPasswordFilter(),
@@ -23,6 +26,20 @@ async function bootstrap() {
     new ErrorRemoveExpenseFilter(),
   );
   app.useGlobalPipes(new ValidationPipe());
+
+  const options = new DocumentBuilder()
+    .setTitle('Organizador de Contas')
+    .setDescription(
+      'Essa API tem como foco principal a organização de contas de usuários',
+    )
+    .setVersion('1.0')
+    .addTag('User')
+    .addTag('Expense')
+    .build();
+
+  const document = SwaggerModule.createDocument(appSwagger, options);
+  SwaggerModule.setup('api-docs', appSwagger, document);
   await app.listen(process.env.PORT ?? 3000);
+  await appSwagger.listen(process.env.PORT ?? 3001);
 }
 bootstrap();
