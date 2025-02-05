@@ -10,11 +10,13 @@ import { ErrorRoleUserFilter } from './filters/error-role-user.filter';
 import { ErrorEmptyIntermediaryFilter } from './filters/error-empty-intermediary.filter';
 import { ErrorRemoveExpenseFilter } from './filters/error-remove-expense.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { UserModule } from './api-docs/users/user.module';
+import { AppModule as AppModuleApi } from './api-docs/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const appSwagger = await NestFactory.create(UserModule);
+  const appSwagger = await NestFactory.create(AppModuleApi);
+
+  // filtros para aplicação e api
   app.useGlobalFilters(
     new ErrorFoundUserFilter(),
     new ErrorInvalidPasswordFilter(),
@@ -25,12 +27,25 @@ async function bootstrap() {
     new ErrorEmptyIntermediaryFilter(),
     new ErrorRemoveExpenseFilter(),
   );
+  appSwagger.useGlobalFilters(
+    new ErrorFoundUserFilter(),
+    new ErrorInvalidPasswordFilter(),
+    new ErrorInvalidOldPasswordFilter(),
+    new ErrorUpdateUserFilter(),
+    new ErrorRemoveUserFilter(),
+    new ErrorRoleUserFilter(),
+    new ErrorEmptyIntermediaryFilter(),
+    new ErrorRemoveExpenseFilter(),
+  );
+
+  // validação para aplicação e api
   app.useGlobalPipes(new ValidationPipe());
+  appSwagger.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
-    .setTitle('Organizador de Contas')
+    .setTitle('EasySplit')
     .setDescription(
-      'Essa API tem como foco principal a organização de contas de usuários',
+      'Essa API tem como foco a organização de contas pessoais e a divisão inteligente entre contas que tenham dois ou mais destinatários de uma mesma conta',
     )
     .setVersion('1.0')
     .addTag('User')
@@ -39,6 +54,7 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(appSwagger, options);
   SwaggerModule.setup('api-docs', appSwagger, document);
+
   await app.listen(process.env.PORT ?? 3000);
   await appSwagger.listen(process.env.PORT ?? 3001);
 }

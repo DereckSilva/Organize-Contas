@@ -1,4 +1,4 @@
-<h1 style="text-align:center">🏗️🏗️Projeto Organize suas Contas🏗️🏗️</h1> 
+<h1 style="text-align:center">🏗️🏗️Projeto EasySplit🏗️🏗️</h1> 
 
 ## OBS
 
