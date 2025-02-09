@@ -10,7 +10,7 @@ export interface User extends Document {
     price: number;
     parcels: number;
     payeeId: string;
-    dataPayment: Date;
+    datePayment: Date;
     intermediary: boolean;
   }>;
   readonly slug: string;

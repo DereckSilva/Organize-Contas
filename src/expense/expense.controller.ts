@@ -69,7 +69,7 @@ export class ExpenseController {
           price: expense[0].price,
           parcels: expense[0].parcels,
           intermediary: expense[0].intermediary,
-          datePayment: expense[0].dataPayment,
+          datePayment: expense[0].datePayment,
         },
       },
     ];

@@ -7,6 +7,6 @@ export interface Expense extends Document {
   readonly payeeId: string;
   readonly intermediaryId: string;
   readonly intermediary: boolean;
-  readonly dataPayment: Date;
+  readonly datePayment: Date;
   readonly slug: string;
 }
